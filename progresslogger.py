@@ -19,25 +19,35 @@ def enumerate(sequence, progress_logger=None):
         raise ValueError(f'progress_logger must be of type {ProgressLogger}, not {type(progress_logger)}')
 
     if not progress_logger:
-        progress_logger = ProgressLogger(sequence)
+        progress_logger = ProgressLogger(sequence, initialize_logger=True)
+
+    else:
+        progress_logger.initialize_logger(sequence)
 
     for elem in sequence:
-        yield n, elem
-        n += 1
-
         try:
             progress_logger.log()
 
         except Exception as e:
             progress_logger._log_error(e)
 
+        yield n, elem
+        n += 1
+
+    progress_logger.log()
+
 
 class ProgressLogger:
-    def __init__(self, sequence=None, initialize_logger=True, silent_errors=True,
+    def __init__(self, sequence=None, initialize_logger=None, silent_errors=True,
         show_percentage=True, show_estimate=True, show_next_value=False, percentage_precision=2, give_estimate_in_seconds=False):
 
         '''Initializes a new instance of ProgressLogger'''
         self.silent_errors = silent_errors
+
+        # only automatically initialize logger if there is a sequence
+        if initialize_logger == None:
+            initialize_logger = not sequence == None
+
         if initialize_logger:
             if sequence == None and initialize_logger: raise ValueError('Must provide sequence when initializing logger')
             self.initialize_logger(sequence)
@@ -133,8 +143,13 @@ class ProgressLogger:
         try:
             # ignore the first iteration
             if self.current_iteration == 0:
-                print(f'Starting progress logger for {len(self.sequence)} items.')
+                log_string = f"Starting progress logger for {len(self.sequence)} {'items' if len(self.sequence) != 1 else 'item'}."
+                if self.show_next_value: log_string += f' Next value: "{self.sequence[self.current_iteration]}".'
+                print(log_string)
+                
+                # initialize start timer
                 self.last_loop_timestamp = time.time()
+                
                 return
 
             current_time = time.time()
@@ -145,6 +160,11 @@ class ProgressLogger:
 
             # calculate average by taking the last loop time and weighting it against previous loop times
             self.average_loop_time = ( ( (self.current_iteration - 1) * self.average_loop_time ) + self.time_since_last_loop ) / self.current_iteration
+
+            # final log
+            if self.current_iteration == len(self.sequence):
+                print(f"Loop complete! Average iteration time: {round(self.average_loop_time, 2)} {'seconds' if round(self.average_loop_time, 2) != 1 else 'second'}")
+                return
 
             # build log string
             log_string = f'Iteration {self.current_iteration} of {len(self.sequence)}'
@@ -159,10 +179,3 @@ class ProgressLogger:
         except Exception as e:
             self._log_error(e)
             return
-
-
-if __name__ == '__main__':
-    mylogger = ProgressLogger(initialize_logger=False)
-    mylogger.log()
-    for i, j in enumerate(range(100000)):
-        time.sleep(1)

@@ -54,7 +54,7 @@ Output:
 
 If you'd like to retain the built-in `enumerate()` function, or you'd like to have both, you can use `from progresslogger import ProgressLogger` or `import progresslogger` and use `progresslogger.enumerate(...)`.
 
-You may wish to insert the log in the middle of a loop, or otherwise implement your logger yourself. Simply initialize `ProgressLogger` before the loop, and call `mylogger.log()` once each loop:
+You may wish to insert the log in the middle of a loop, or otherwise implement your logger yourself. Simply initialize `ProgressLogger` before the loop, and call `my_logger.log()` once each loop:
 ```
 my_logger = ProgressLogger(my_list) # be sure to pass your collection when initializing your logger
 for letter in my_list:

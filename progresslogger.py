@@ -163,7 +163,7 @@ class ProgressLogger:
 
             # final log
             if self.current_iteration == len(self.sequence):
-                print(f"Loop complete! Average iteration time: {round(self.average_loop_time, 2)} {'seconds' if round(self.average_loop_time, 2) != 1 else 'second'}")
+                print(f'Loop complete! Average iteration time: {round(self.average_loop_time, 2)} seconds')
                 return
 
             # build log string

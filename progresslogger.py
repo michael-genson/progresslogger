@@ -103,7 +103,7 @@ class ProgressLogger:
         if days: estimate_string += f"{days} {'days' if days != 1 else 'day'}, "
         if hours: estimate_string += f"{hours} {'hours' if hours != 1 else 'hour'}, "
         if minutes: estimate_string += f"{minutes} {'minutes' if minutes != 1 else 'minute'}, "
-        if seconds: estimate_string += f"{seconds} {'seconds' if seconds != 1 else 'second'}, "
+        if seconds or not estimate_string: estimate_string += f"{seconds} {'seconds' if seconds != 1 else 'second'}, "
 
         return estimate_string[:-2] # remove trailing comma & space
 

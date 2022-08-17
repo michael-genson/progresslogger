@@ -61,7 +61,7 @@ class ProgressLogger:
 
     def _log_error(self, error):
         '''Prints error to the console or raises the error depending on initialization params'''
-        if self.silent_errors:
+        if not self.silent_errors:
             print(error)
 
         else:

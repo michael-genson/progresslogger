@@ -38,11 +38,12 @@ def enumerate(sequence, progress_logger=None):
 
 
 class ProgressLogger:
-    def __init__(self, sequence=None, initialize_logger=None, silent_errors=True,
+    def __init__(self, sequence=None, initialize_logger=None, silent_errors=True, print_errors=True,
         show_percentage=True, show_estimate=True, show_next_value=False, percentage_precision=2, give_estimate_in_seconds=False):
 
         '''Initializes a new instance of ProgressLogger'''
         self.silent_errors = silent_errors
+        self.print_errors = print_errors
 
         # only automatically initialize logger if there is a sequence
         if initialize_logger == None:
@@ -62,10 +63,11 @@ class ProgressLogger:
     def _log_error(self, error):
         '''Prints error to the console or raises the error depending on initialization params'''
         if not self.silent_errors:
-            print(error)
+            raise error
 
         else:
-            raise error
+            if self.print_errors:
+                print(error)
 
 
     def _calculate_percentage(self):
